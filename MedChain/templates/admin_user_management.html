@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - User Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            min-width: 320px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            min-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .user-filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .users-table {
+            width: auto;
+            max-width: none;
+            overflow-x: unset !important;
+        }
+        .users-table table {
+            width: auto;
+            min-width: 100%;
+            max-width: none;
+            table-layout: auto;
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        td, th {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 78.8px;
+            vertical-align: middle;
+            word-break: normal;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .users-table {
+                width: auto;
+                overflow-x: unset !important;
+            }
+            .users-table table, .users-table table thead, .users-table table tbody, .users-table table th, .users-table table td, .users-table table tr {
+                display: table;
+                width: auto;
+            }
+            .users-table table thead tr {
+                display: table-row;
+            }
+            .users-table table tr {
+                margin-bottom: 0;
+            }
+            .users-table table td {
+                text-align: center;
+                padding-left: 0;
+                position: static;
+                min-height: unset;
+            }
+            .users-table table td:before {
+                display: none;
+            }
+        }
+        th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+        }
+
+        th:first-child {
+            border-top-left-radius: 15px;
+        }
+        th:last-child {
+            border-top-right-radius: 15px;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .action-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #45a049;
+        }
+
+        .action-btn.delete {
+            background: #f44336;
+        }
+
+        .action-btn.delete:hover {
+            background: #da190b;
+        }
+
+        .pending-changes {
+            background: rgba(255, 193, 7, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .pending-changes h6 {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+
+        .pending-changes p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            padding: 6px 12px; /* Adjusted padding for a cleaner look */
+            border-radius: 15px;
+            font-size: 0.8em;
+            white-space: nowrap; /* Essential to prevent text wrapping */
+            display: inline-flex; /* Use inline-flex for proper alignment */
+            align-items: center;
+            justify-content: center;
+            min-height: 28px; /* Ensure enough vertical space */
+            box-sizing: border-box;
+            /* Removed min-width, text-overflow, and overflow from badge itself.
+               The column width should now handle the space. */
+        }
+
+        .badge-warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .badge-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .badge-secondary {
+            background: rgba(108, 117, 125, 0.2);
+            color: #ccc;
+        }
+
+        .no-users {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Actions column: force buttons side by side */
+        td:nth-child(10) {
+            /* display: flex; */
+            /* flex-direction: row; */
+            /* align-items: center; */
+            /* gap: 10px; */
+            /* flex-wrap: nowrap; */
+            /* height: 78.8px; */
+            /* box-sizing: border-box; */
+        }
+        .action-btn {
+            width: auto;
+            min-width: 0;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Notification Bell Styles - copied from user dashboard */
+        .notification-bell {
+            position: relative;
+            display: inline-block;
+            margin-left: 18px;
+            cursor: pointer;
+        }
+        .notification-bell i {
+            font-size: 1.4em;
+            color: #fff;
+        }
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid #222;
+            display: block;
+        }
+        #notificationDropdown {
+            display: none;
+            position: fixed;
+            width: 380px;
+            max-height: 500px;
+            background: rgba(30,30,30,0.98);
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            z-index: 99999;
+            overflow: visible;
+        }
+        #notificationDropdown.active {
+            display: block;
+        }
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            background: #232323;
+        }
+        .dropdown-header button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+        .dropdown-list {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .notification-item:hover {
+            background: rgba(76,175,80,0.08);
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item .icon {
+            color: #4CAF50;
+            margin-top: 2px;
+        }
+        .notification-item .content {
+            flex: 1;
+        }
+        .notification-item .timestamp {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+        /* Only widen Actions cell when both buttons are present */
+        td.actions-wide {
+            min-width: 180px;
+        }
+        .users-table.centered {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .users-table table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 15px;
+        }
+        .users-table table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 15px;
+        }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 24px;
+            margin: 24px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="{{ url_for('admin_panel') }}"><i class="fas fa-arrow-left"></i> Back to Admin Panel</a>
+            <span style="flex:1"></span>
+            <div class="notification-bell" id="notificationBell" onclick="toggleNotifications(event)" style="margin-right: 24px;">
+                <i class="fas fa-bell"></i>
+                <span class="notification-dot" id="notificationDot" style="display:none;"></span>
+            </div>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div id="notificationDropdown">
+            <div class="dropdown-header">
+                <span>Notifications</span>
+                <button onclick="markAllAsRead(event)">Mark all as read</button>
+            </div>
+            <div class="dropdown-list" id="notificationList">
+                <div style="text-align:center;color:#888;padding:16px;">Loading...</div>
+            </div>
+        </div>
+
+        <h1>Manage {{ user_type|title if user_type else 'All' }} Users</h1>
+
+        <div class="user-filters">
+            <a href="/admin/users" class="filter-btn {% if not user_type %}active{% endif %}">All Users</a>
+            <a href="/admin/users?user_type=doctor" class="filter-btn {% if user_type == 'doctor' %}active{% endif %}">Doctors</a>
+            <a href="/admin/users?user_type=patient" class="filter-btn {% if user_type == 'patient' %}active{% endif %}">Patients</a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert" style="background: rgba(255, 255, 255, 0.1); color: #fff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if users %}
+            {% set has_pending = users|selectattr('edit_status', 'equalto', 'pending')|list|length > 0 %}
+            <div class="glass-container">
+            <div class="users-table{% if not has_pending %} centered{% endif %}" style="width: {{ '100%' if has_pending else 'auto' }};">
+                <table style="width: {{ '100%' if has_pending else 'auto' }};">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Type</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th style="width:220px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td data-label="ID">{{ user.id }}</td>
+                                <td data-label="Username">{{ user.username }}</td>
+                                <td data-label="Full Name">{{ user.full_name }}</td>
+                                <td data-label="Email">{{ user.email }}</td>
+                                <td data-label="Type">{{ user.user_type }}</td>
+                                <td data-label="Age">{{ user.age }}</td>
+                                <td data-label="Gender">{{ user.gender }}</td>
+                                <td data-label="Phone">{{ user.phone }}</td>
+                                <td data-label="Status">
+                                    {% if user.edit_status == 'pending' %}
+                                        <span class="badge badge-warning">Pending Changes</span>
+                                    {% elif user.edit_status == 'approved' %}
+                                        <span class="badge badge-success">Approved</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">No Changes</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Actions" class="{% if user.edit_status == 'pending' %}actions-wide{% endif %}">
+                                    {% if user.edit_status == 'pending' %}
+                                        <form action="{{ url_for('approve_changes', user_id=user.id) }}" method="POST" style="display: inline;">
+                                            <button type="submit" class="action-btn">
+                                                <i class="fas fa-check"></i> Approve
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                    {% if 'admin' not in user.user_type|lower %}
+                                    <button class="action-btn delete" onclick="deleteUser({{ user.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if user.edit_status == 'pending' and user.pending_changes %}
+                                <tr>
+                                    <td colspan="10" style="width: 100%; padding: 0;">
+                                        <div class="pending-changes" style="width: 100%; box-sizing: border-box;">
+                                            <h6>Pending Changes:</h6>
+                                            {% set changes = user.pending_changes|from_json %}
+                                            {% for key, value in changes.items() %}
+                                                {% set old_value = user[key] %}
+                                                {% if user.changed_fields.get(key) %}
+                                                    <p style="background: rgba(255, 193, 7, 0.25); border-radius: 4px; padding: 6px 10px; margin-bottom: 6px;">
+                                                        <strong>{{ key|replace('_', ' ')|title }}:</strong>
+                                                        <span style="color: #ffc107;">{{ old_value }}</span>
+                                                        <i class="fas fa-arrow-right" style="margin: 0 6px; color: #ffc107;"></i>
+                                                        <span style="color: #4CAF50; font-weight: 500;">{{ value }}</span>
+                                                    </p>
+                                                {% else %}
+                                                    <p><strong>{{ key|replace('_', ' ')|title }}:</strong> {{ value }}</p>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        {% else %}
+            <div class="no-users">
+                <i class="fas fa-users"></i>
+                <p>No {{ user_type if user_type else 'users' }} found.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                fetch(`/admin/delete_user/${userId}`, {
+                    method: 'POST',
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+        function toggleNotifications(e) {
+            e.stopPropagation();
+            const bell = document.getElementById('notificationBell');
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active');
+                return;
+            }
+            // Position the dropdown below the bell icon
+            const rect = bell.getBoundingClientRect();
+            dropdown.style.top = (rect.bottom + 8) + 'px';
+            dropdown.style.left = (rect.right - 380) + 'px';
+            dropdown.classList.add('active');
+            fetchNotifications();
+        }
+        function fetchNotifications() {
+            fetch('/notifications/json')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('notificationList');
+                    if (data.notifications.length === 0) {
+                        list.innerHTML = '<div style="text-align:center;color:#888;padding:16px;">No notifications.</div>';
+                        document.getElementById('notificationDot').style.display = 'none';
+                    } else {
+                        list.innerHTML = data.notifications.map(n =>
+                            `<div class='notification-item'>
+                                <span class='icon'><i class='fas fa-circle'></i></span>
+                                <div class='content'>${n.message}<div class='timestamp'>${n.timestamp}</div></div>
+                            </div>`
+                        ).join('');
+                        document.getElementById('notificationDot').style.display = 'block';
+                    }
+                });
+        }
+        function markAllAsRead(e) {
+            e.stopPropagation();
+            fetch('/notifications/mark_all_read', {method: 'POST'})
+                .then(() => fetchNotifications());
+        }
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown && !dropdown.contains(e.target) && !e.target.closest('.notification-bell')) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+    <script>
+        // Ensure notification dot is updated on page load (more reliable)
+        document.addEventListener('DOMContentLoaded', fetchNotifications);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .system-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: transform 0.3s ease;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .system-card i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        .system-card h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .system-card p {
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .admin-card a {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .admin-card a:hover {
+            background: #45a049;
+        }
+
+        .nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .warning-card {
+            background: rgba(255, 193, 7, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            color: #fff;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .warning-card h5 {
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+
+        .warning-card p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-check {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-danger:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        /* Add styles for clear-uploads-section and current-status-box */
+        .clear-uploads-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            color: #fff;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-top: 30px;
+        }
+
+        .clear-uploads-section h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .clear-uploads-section p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .current-status-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .current-status-box h6 {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .current-status-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .current-status-box li {
+            margin-bottom: 5px;
+        }
+
+        /* Ensure the button and checkboxes look good */
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        /* Notification Bell Styles - copied from user dashboard */
+        .notification-bell {
+            position: relative;
+            display: inline-block;
+            margin-left: 18px;
+            cursor: pointer;
+        }
+        .notification-bell i {
+            font-size: 1.4em;
+            color: #fff;
+        }
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid #222;
+            display: block;
+        }
+        #notificationDropdown {
+            display: none;
+            position: fixed;
+            width: 380px;
+            max-height: 500px;
+            background: rgba(30,30,30,0.98);
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            z-index: 99999;
+            overflow: visible;
+        }
+        #notificationDropdown.active {
+            display: block;
+        }
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            background: #232323;
+        }
+        .dropdown-header button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+        .dropdown-list {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .notification-item:hover {
+            background: rgba(76,175,80,0.08);
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item .icon {
+            color: #4CAF50;
+            margin-top: 2px;
+        }
+        .notification-item .content {
+            flex: 1;
+        }
+        .notification-item .timestamp {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="{{ url_for('admin_panel') }}"><i class="fas fa-arrow-left"></i> Back to Admin Panel</a>
+            <span style="flex:1"></span>
+            <div class="notification-bell" id="notificationBell" onclick="toggleNotifications(event)" style="margin-right: 24px;">
+                <i class="fas fa-bell"></i>
+                <span class="notification-dot" id="notificationDot" style="display:none;"></span>
+            </div>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div id="notificationDropdown">
+            <div class="dropdown-header">
+                <span>Notifications</span>
+                <button onclick="markAllAsRead(event)">Mark all as read</button>
+            </div>
+            <div class="dropdown-list" id="notificationList">
+                <div style="text-align:center;color:#888;padding:16px;">Loading...</div>
+            </div>
+        </div>
+
+        <h1>System Management</h1>
+        
+        <div class="admin-grid">
+            <div class="system-card">
+                <i class="fas fa-file"></i>
+                <h2>Total Files</h2>
+                <p class="h3">{{ total_files }}</p>
+            </div>
+            
+            <div class="system-card">
+                <i class="fas fa-users"></i>
+                <h2>Total Users</h2>
+                <p class="h3">{{ total_users }}</p>
+            </div>
+
+            <div class="system-card">
+                <i class="fas fa-database"></i>
+                <h2>Storage Used</h2>
+                <p class="h3">{{ storage_used }}</p>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="warning-card mb-4">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Warning</h5>
+                    <p>The following actions are irreversible and will permanently delete data from the system. Please proceed with caution.</p>
+                </div>
+
+                <div class="clear-uploads-section mb-4">
+                    <h2>Clear All Uploads</h2>
+                    <p style="text-align: left;">This action will:</p>
+                    <ul style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px; text-align: left;">
+                        <li>Delete all files from the uploads directory</li>
+                        <li>Remove all file records from the database</li>
+                        <li>Remove all file sharing records</li>
+                        <li>Create a blockchain transaction recording the cleanup</li>
+                    </ul>
+                    
+                    <div class="current-status-box" style="text-align: left;">
+                        <h6 style="color: #4CAF50;">Current Status:</h6>
+                        <ul style="color: rgba(255, 255, 255, 0.7);">
+                            <li>Number of files to be deleted: {{ total_files }}</li>
+                            <li>Total storage to be cleared: {{ storage_used }}</li>
+                        </ul>
+                    </div>
+
+                    <form action="{{ url_for('clear_uploads') }}" method="POST" id="clearUploadsForm" style="margin-top: 20px; text-align: left;">
+                        <div class="form-check" style="justify-content: flex-start;">
+                            <input class="form-check-input" type="checkbox" id="confirmCheck" required>
+                            <label class="form-check-label" for="confirmCheck">
+                                I understand that this action cannot be undone
+                            </label>
+                        </div>
+                        <div class="form-check" style="justify-content: flex-start;">
+                            <input class="form-check-input" type="checkbox" id="backupCheck" required>
+                            <label class="form-check-label" for="backupCheck">
+                                I have backed up any important data
+                            </label>
+                        </div>
+                        <button type="submit" class="btn-danger" id="clearButton" disabled>
+                            <i class="fas fa-trash"></i> Clear All Uploads
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmCheck = document.getElementById('confirmCheck');
+        const backupCheck = document.getElementById('backupCheck');
+        const clearButton = document.getElementById('clearButton');
+        const form = document.getElementById('clearUploadsForm');
+
+        function updateButtonState() {
+            clearButton.disabled = !(confirmCheck.checked && backupCheck.checked);
+        }
+
+        confirmCheck.addEventListener('change', updateButtonState);
+        backupCheck.addEventListener('change', updateButtonState);
+
+        form.addEventListener('submit', function(e) {
+            if (!confirm('Are you absolutely sure you want to clear all uploads? This action cannot be undone.')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Notification bell JS (copied from admin_settings.html)
+    function toggleNotifications(e) {
+        e.stopPropagation();
+        const bell = document.getElementById('notificationBell');
+        const dropdown = document.getElementById('notificationDropdown');
+        if (dropdown.classList.contains('active')) {
+            dropdown.classList.remove('active');
+            return;
+        }
+        // Position the dropdown below the bell icon
+        const rect = bell.getBoundingClientRect();
+        dropdown.style.top = (rect.bottom + 8) + 'px';
+        dropdown.style.left = (rect.right - 380) + 'px';
+        dropdown.classList.add('active');
+        fetchNotifications();
+    }
+    function fetchNotifications() {
+        fetch('/notifications/json')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('notificationList');
+                if (data.notifications.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:#888;padding:16px;">No notifications.</div>';
+                    document.getElementById('notificationDot').style.display = 'none';
+                } else {
+                    list.innerHTML = data.notifications.map(n =>
+                        n.link ?
+                        `<div class='notification-item' data-id='${n.id}' data-link='${n.link}'>
+                            <span class='icon'><i class='fas fa-circle'></i></span>
+                            <div class='content'>${n.message}<div class='timestamp'>${n.timestamp}</div></div>
+                        </div>` :
+                        `<div class='notification-item' data-id='${n.id}'>
+                            <span class='icon'><i class='fas fa-circle'></i></span>
+                            <div class='content'>${n.message}<div class='timestamp'>${n.timestamp}</div></div>
+                        </div>`
+                    ).join('');
+                    document.getElementById('notificationDot').style.display = 'block';
+                    // Add click handlers for notification items
+                    document.querySelectorAll('.notification-item').forEach(item => {
+                        item.onclick = function(e) {
+                            e.stopPropagation();
+                            const notifId = this.getAttribute('data-id');
+                            const link = this.getAttribute('data-link');
+                            fetch(`/notifications/mark_read/${notifId}`, {method: 'POST'})
+                                .then(() => {
+                                    this.remove();
+                                    if (link) {
+                                        window.location.href = link;
+                                    }
+                                });
+                        };
+                    });
+                }
+            });
+    }
+    function markAllAsRead(e) {
+        e.stopPropagation();
+        fetch('/notifications/mark_all_read', {method: 'POST'})
+            .then(() => fetchNotifications());
+    }
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('notificationDropdown');
+        if (dropdown && !dropdown.contains(e.target) && !e.target.closest('.notification-bell')) {
+            dropdown.classList.remove('active');
+        }
+    });
+    </script>
+    <script>
+        // Ensure notification dot is updated on page load (more reliable)
+        document.addEventListener('DOMContentLoaded', fetchNotifications);
+    </script>
+</body>
+</html> 

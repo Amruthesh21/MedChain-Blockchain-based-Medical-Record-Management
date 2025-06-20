@@ -1,0 +1,274 @@
+<!-- register.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 100%;
+            max-width: 800px;
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 6px;
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.2);
+            color: #222;
+            font-size: 1em;
+            margin-top: 4px;
+        }
+        input[type="submit"] {
+            background: #4CAF50;
+            color: #fff;
+            font-weight: 500;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        input[type="submit"]:hover {
+            background: #388e3c;
+        }
+        .login-link {
+            color: #fff;
+            text-align: center;
+            display: block;
+            margin-top: 18px;
+            font-size: 0.98em;
+        }
+        .icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .icon i {
+            font-size: 48px;
+            color: #4CAF50;
+        }
+        @media (max-width: 900px) {
+            .container {
+                padding: 24px 8px;
+                max-width: 98vw;
+            }
+        }
+        html {
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <form class="container" method="POST" autocomplete="off" onsubmit="return validateForm()">
+        <div class="icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <h2>Register</h2>
+        <div id="warning" style="color:#ff4444; text-align:center; margin-bottom:10px; display:none;"></div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="user_type">Register as</label>
+                <select id="user_type" name="user_type" required>
+                    <option value="">Select...</option>
+                    <option value="Patient">Patient</option>
+                    <option value="Doctor">Doctor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" min="1" max="109" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="country_code">Country Code</label>
+                <select id="country_code" name="country_code" required>
+                    <option value="+1">+1 (USA)</option>
+                    <option value="+91">+91 (India)</option>
+                    <option value="+44">+44 (UK)</option>
+                    <option value="+61">+61 (Australia)</option>
+                    <option value="+81">+81 (Japan)</option>
+                    <option value="+49">+49 (Germany)</option>
+                    <option value="+33">+33 (France)</option>
+                    <option value="+86">+86 (China)</option>
+                    <option value="+971">+971 (UAE)</option>
+                    <option value="+7">+7 (Russia)</option>
+                    <option value="+55">+55 (Brazil)</option>
+                    <option value="+234">+234 (Nigeria)</option>
+                    <option value="+27">+27 (South Africa)</option>
+                    <option value="+82">+82 (South Korea)</option>
+                    <option value="+34">+34 (Spain)</option>
+                    <option value="+39">+39 (Italy)</option>
+                    <option value="+63">+63 (Philippines)</option>
+                    <option value="+62">+62 (Indonesia)</option>
+                    <option value="+880">+880 (Bangladesh)</option>
+                    <option value="+20">+20 (Egypt)</option>
+                    <option value="+92">+92 (Pakistan)</option>
+                    <option value="+60">+60 (Malaysia)</option>
+                    <option value="+65">+65 (Singapore)</option>
+                    <option value="+66">+66 (Thailand)</option>
+                    <option value="+90">+90 (Turkey)</option>
+                    <option value="+358">+358 (Finland)</option>
+                    <option value="+46">+46 (Sweden)</option>
+                    <option value="+47">+47 (Norway)</option>
+                    <option value="+48">+48 (Poland)</option>
+                    <option value="+351">+351 (Portugal)</option>
+                    <option value="+31">+31 (Netherlands)</option>
+                    <option value="+32">+32 (Belgium)</option>
+                    <option value="+420">+420 (Czech Republic)</option>
+                    <option value="+36">+36 (Hungary)</option>
+                    <option value="+43">+43 (Austria)</option>
+                    <option value="+41">+41 (Switzerland)</option>
+                    <option value="+380">+380 (Ukraine)</option>
+                    <option value="+994">+994 (Azerbaijan)</option>
+                    <option value="+40">+40 (Romania)</option>
+                    <option value="+48">+48 (Poland)</option>
+                    <option value="+420">+420 (Czech Republic)</option>
+                    <option value="+36">+36 (Hungary)</option>
+                    <option value="+43">+43 (Austria)</option>
+                    <option value="+41">+41 (Switzerland)</option>
+                    <option value="+380">+380 (Ukraine)</option>
+                    <option value="+994">+994 (Azerbaijan)</option>
+                    <option value="+40">+40 (Romania)</option>
+                    <!-- Add more as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" required maxlength="10" minlength="10" pattern="[0-9]{10}">
+            </div>
+        </div>
+        <input type="submit" value="Register">
+        <a class="login-link" href="/login">Already have an account? Login</a>
+    </form>
+    <script>
+    function validateForm() {
+        const warning = document.getElementById('warning');
+        warning.style.display = 'none';
+        let msg = '';
+        // Age
+        const age = parseInt(document.getElementById('age').value);
+        if (isNaN(age) || age < 1 || age > 109) {
+            msg += 'Age must be between 1 and 109.<br>';
+        }
+        // Email
+        const email = document.getElementById('email').value.trim();
+        const allowedDomains = [
+            'gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com',
+            'edu', 'ac.', 'org', 'gov', 'co.', 'in', 'net', 'student', 'school', 'college', 'university'
+        ];
+        const disposableDomains = [
+            'mailinator.com', 'tempmail', '10minutemail', 'guerrillamail', 'yopmail', 'trashmail', 'getnada', 'dispostable', 'maildrop', 'fakeinbox', 'sharklasers', 'spamgourmet', 'mailnesia', 'mintemail', 'mytemp.email', 'throwawaymail', 'mailcatch', 'spambox', 'discard.email', 'mailnull', 'tempail', 'moakt', 'emailondeck', 'mail-temp', 'temp-mail', 'mail.tm', 'mailpoof', 'mailbox52', 'mail7', 'mailsac', 'mailnesia', 'maildrop.cc', 'mailcatch.com', 'spambog.com', 'spambog.de', 'spambog.ru', 'spambog.xyz', 'spambog.pl', 'spambog.com', 'spambog.de', 'spambog.ru', 'spambog.xyz', 'spambog.pl'
+        ];
+        const emailParts = email.split('@');
+        if (emailParts.length !== 2) {
+            msg += 'Invalid email format.<br>';
+        } else {
+            const domain = emailParts[1].toLowerCase();
+            if (disposableDomains.some(d => domain.includes(d))) {
+                msg += 'Disposable email addresses are not allowed.<br>';
+            } else if (!allowedDomains.some(d => domain.includes(d))) {
+                msg += 'Please use a valid email provider (gmail, outlook, yahoo, hotmail, or a student/corporate email).<br>';
+            }
+        }
+        // Phone
+        const phone = document.getElementById('phone').value.trim();
+        if (!/^[0-9]{10}$/.test(phone)) {
+            msg += 'Phone number must be exactly 10 digits.<br>';
+        }
+        // Password
+        const password = document.getElementById('password').value;
+        const strong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+        if (!strong.test(password)) {
+            msg += 'Password must be at least 8 characters and include uppercase, lowercase, digit, and special character.<br>';
+        }
+        // All fields required
+        const requiredFields = ['full_name','email','username','password','user_type','age','gender','country_code','phone'];
+        for (let id of requiredFields) {
+            if (!document.getElementById(id).value.trim()) {
+                msg += 'All fields are mandatory.<br>';
+                break;
+            }
+        }
+        if (msg) {
+            warning.innerHTML = msg;
+            warning.style.display = 'block';
+            return false;
+        }
+        return true;
+    }
+    </script>
+</body>
+</html>

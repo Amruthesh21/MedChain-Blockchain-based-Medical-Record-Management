@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Blockchain System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar {
+            background-color: #2c3e50;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .nav-link:hover {
+            color: #3498db !important;
+        }
+        .content-wrapper {
+            min-height: calc(100vh - 56px);
+            padding: 20px 0;
+        }
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        .notification-bell {
+            position: relative;
+            display: inline-block;
+            margin-left: 18px;
+            cursor: pointer;
+        }
+        .notification-bell i {
+            font-size: 1.4em;
+            color: #fff;
+        }
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid #222;
+            display: block;
+        }
+        #notificationDropdown {
+            display: none;
+            position: fixed;
+            width: 380px;
+            max-height: 500px;
+            background: rgba(30,30,30,0.98);
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            z-index: 99999;
+            overflow: visible;
+        }
+        #notificationDropdown.active {
+            display: block;
+        }
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            background: #232323;
+        }
+        .dropdown-header button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+        .dropdown-list {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item .icon {
+            color: #4CAF50;
+            margin-top: 2px;
+        }
+        .notification-item .content {
+            flex: 1;
+        }
+        .notification-item .timestamp {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-hospital"></i> Medical Blockchain
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if session.get('username') %}
+                        {% if session.get('user_type') == 'admin' %}
+                            <!-- Notification Bell for Admins -->
+                            <li class="nav-item" style="position:relative;">
+                                <div class="notification-bell" id="notificationBell" onclick="toggleNotifications(event)" style="margin-right: 24px;">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="notification-dot" id="notificationDot" style="display:none;"></span>
+                                </div>
+                                <div id="notificationDropdown">
+                                    <div class="dropdown-header">
+                                        <span>Notifications</span>
+                                        <button onclick="markAllAsRead(event)">Mark all as read</button>
+                                    </div>
+                                    <div class="dropdown-list" id="notificationList">
+                                        <div style="text-align:center;color:#888;padding:16px;">Loading...</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin_panel') }}">
+                                    <i class="fas fa-tachometer-alt"></i> Admin Panel
+                                </a>
+                            </li>
+                            {% if request.endpoint != 'system_management' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('system_management') }}">
+                                    <i class="fas fa-cogs"></i> System
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('user_dashboard') }}">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('upload_file1') }}">
+                                    <i class="fas fa-upload"></i> Share Report
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('shared_files') }}">
+                                    <i class="fas fa-file-alt"></i> Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('blockchain_details') }}">
+                                    <i class="fas fa-link"></i> Blockchain Details
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('profile') }}">
+                                    <i class="fas fa-user"></i> Profile
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="container">
+                    {% for message in messages %}
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 Medical Blockchain System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Notification bell JS for Admins
+        function toggleNotifications(e) {
+            e.stopPropagation();
+            const bell = document.getElementById('notificationBell');
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active');
+                return;
+            }
+            // Position the dropdown below the bell icon
+            const rect = bell.getBoundingClientRect();
+            dropdown.style.top = (rect.bottom + 8) + 'px';
+            dropdown.style.left = (rect.right - 380) + 'px';
+            dropdown.classList.add('active');
+            fetchNotifications();
+        }
+        function fetchNotifications() {
+            fetch('/notifications/json')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('notificationList');
+                    if (data.notifications.length === 0) {
+                        list.innerHTML = '<div style="text-align:center;color:#888;padding:16px;">No notifications.</div>';
+                        document.getElementById('notificationDot').style.display = 'none';
+                    } else {
+                        list.innerHTML = data.notifications.map(n =>
+                            `<div class='notification-item'>
+                                <span class='icon'><i class='fas fa-circle'></i></span>
+                                <div class='content'>${n.message}<div class='timestamp'>${n.timestamp}</div></div>
+                            </div>`
+                        ).join('');
+                        document.getElementById('notificationDot').style.display = 'block';
+                    }
+                });
+        }
+        function markAllAsRead(e) {
+            e.stopPropagation();
+            fetch('/notifications/mark_all_read', {method: 'POST'})
+                .then(() => fetchNotifications());
+        }
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown && !dropdown.contains(e.target) && !e.target.closest('.notification-bell')) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html> 

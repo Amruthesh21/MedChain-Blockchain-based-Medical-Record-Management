@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Details</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 20px;
+        }
+
+        .nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .blockchain-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .block {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            color: #fff;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: transform 0.3s ease;
+        }
+
+        .block:hover {
+            transform: translateY(-5px);
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .block-index {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .block-timestamp {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .block-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+
+        .no-blocks {
+            text-align: center;
+            color: #fff;
+            font-size: 1.2em;
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .block-details {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        .notification-bell {
+            position: relative;
+            display: inline-block;
+            margin-left: 18px;
+            cursor: pointer;
+        }
+        .notification-bell i {
+            font-size: 1.4em;
+            color: #fff;
+        }
+        .notification-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid #222;
+            display: block;
+        }
+        #notificationDropdown {
+            display: none;
+            position: fixed;
+            width: 380px;
+            max-height: 500px;
+            background: rgba(30,30,30,0.98);
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            z-index: 99999;
+            overflow: visible;
+        }
+        #notificationDropdown.active {
+            display: block;
+        }
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            background: #232323;
+        }
+        .dropdown-header button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+        .dropdown-list {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .notification-item:hover {
+            background: rgba(76,175,80,0.08);
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item .icon {
+            color: #4CAF50;
+            margin-top: 2px;
+        }
+        .notification-item .content {
+            flex: 1;
+        }
+        .notification-item .timestamp {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    {% if session.get('user_type') != 'admin' %}
+    <div class="nav">
+        <a href="{{ url_for('user_dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{{ url_for('upload_file1') }}"><i class="fas fa-upload"></i> Share Report</a>
+        <a href="{{ url_for('shared_files') }}"><i class="fas fa-file-alt"></i> Reports</a>
+        <a href="{{ url_for('blockchain_details') }}"><i class="fas fa-link"></i> Blockchain Details</a>
+        <a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i> Profile</a>
+        <span style="flex:1"></span>
+        <div class="notification-bell" id="notificationBell" onclick="toggleNotifications(event)" style="margin-right: 24px;">
+            <i class="fas fa-bell"></i>
+            <span class="notification-dot" id="notificationDot" style="display:none;"></span>
+        </div>
+        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+    <div id="notificationDropdown">
+        <div class="dropdown-header">
+            <span>Notifications</span>
+            <button onclick="markAllAsRead(event)">Mark all as read</button>
+        </div>
+        <div class="dropdown-list" id="notificationList">
+            <div style="text-align:center;color:#888;padding:16px;">Loading...</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="container">
+        {% if session.get('user_type') == 'admin' %}
+        <div class="nav">
+            <a href="{{ url_for('admin_panel') }}"><i class="fas fa-arrow-left"></i> Back to Admin Panel</a>
+            <span style="flex:1"></span>
+            <div class="notification-bell" id="notificationBell" onclick="toggleNotifications(event)" style="margin-right: 24px;">
+                <i class="fas fa-bell"></i>
+                <span class="notification-dot" id="notificationDot" style="display:none;"></span>
+            </div>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div id="notificationDropdown">
+            <div class="dropdown-header">
+                <span>Notifications</span>
+                <button onclick="markAllAsRead(event)">Mark all as read</button>
+            </div>
+            <div class="dropdown-list" id="notificationList">
+                <div style="text-align:center;color:#888;padding:16px;">Loading...</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <h1>Blockchain Details</h1>
+        
+        {% if blockchain %}
+            <div class="blockchain-container">
+                {% for block in blockchain %}
+                    <div class="block">
+                        <div class="block-header">
+                            <div class="block-index">
+                                <i class="fas fa-cube"></i> Block #{{ block[0] }}
+                            </div>
+                            <div class="block-timestamp">
+                                <i class="fas fa-clock"></i> {{ block[1] }}
+                            </div>
+                        </div>
+                        <div class="block-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Previous Hash</div>
+                                <div class="detail-value">{{ block[2] }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Transactions</div>
+                                <div class="detail-value">{{ block[3] }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Nonce</div>
+                                <div class="detail-value">{{ block[4] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-blocks">
+                <i class="fas fa-cubes"></i>
+                <p>No blockchain data available.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+    function toggleNotifications(e) {
+        e.stopPropagation();
+        const bell = document.getElementById('notificationBell');
+        const dropdown = document.getElementById('notificationDropdown');
+        if (dropdown.classList.contains('active')) {
+            dropdown.classList.remove('active');
+            return;
+        }
+        // Position the dropdown below the bell icon
+        const rect = bell.getBoundingClientRect();
+        dropdown.style.top = (rect.bottom + 8) + 'px';
+        dropdown.style.left = (rect.right - 380) + 'px';
+        dropdown.classList.add('active');
+        fetchNotifications();
+    }
+    function fetchNotifications() {
+        fetch('/notifications/json')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('notificationList');
+                if (data.notifications.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:#888;padding:16px;">No notifications.</div>';
+                    document.getElementById('notificationDot').style.display = 'none';
+                } else {
+                    list.innerHTML = data.notifications.map(n =>
+                        n.link ?
+                        `<div class='notification-item' data-id='${n.id}' data-link='${n.link}'>
+                            <span class='icon'><i class='fas fa-circle'></i></span>
+                            <div class='content'>${n.message}<div class='timestamp'>${n.timestamp}</div></div>
+                        </div>` :
+                        `<div class='notification-item' data-id='${n.id}'>
+                            <span class='icon'><i class='fas fa-circle'></i></span>
+                            <div class='content'>${n.message}<div class='timestamp'>${n.timestamp}</div></div>
+                        </div>`
+                    ).join('');
+                    document.getElementById('notificationDot').style.display = 'block';
+                    // Add click handlers for notification items
+                    document.querySelectorAll('.notification-item').forEach(item => {
+                        item.onclick = function(e) {
+                            e.stopPropagation();
+                            const notifId = this.getAttribute('data-id');
+                            const link = this.getAttribute('data-link');
+                            fetch(`/notifications/mark_read/${notifId}`, {method: 'POST'})
+                                .then(() => {
+                                    this.remove();
+                                    if (link) {
+                                        window.location.href = link;
+                                    }
+                                });
+                        };
+                    });
+                }
+            });
+    }
+    function markAllAsRead(e) {
+        e.stopPropagation();
+        fetch('/notifications/mark_all_read', {method: 'POST'})
+            .then(() => fetchNotifications());
+    }
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('notificationDropdown');
+        if (dropdown && !dropdown.contains(e.target) && !e.target.closest('.notification-bell')) {
+            dropdown.classList.remove('active');
+        }
+    });
+    </script>
+    <script>
+        // Ensure notification dot is updated on page load (more reliable)
+        document.addEventListener('DOMContentLoaded', fetchNotifications);
+    </script>
+</body>
+</html>
